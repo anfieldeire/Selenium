@@ -1,0 +1,197 @@
+from selenium import webdriver
+import time
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support.ui import Select
+from datetime import date
+from selenium.webdriver.common.action_chains import ActionChains
+import unittest
+
+class Servicenow_IncCreate(unittest.TestCase):
+    def setUp(self):
+        self.driver = webdriver.Firefox()
+#        base_url =  "https://dev65721.service-now.com"
+        
+#        driver.implicitly_wait(10)
+
+#        
+
+#        driver.get(base_url)
+
+    def test_selenium(self):	
+        #
+        identifier = "AUTOMATED TESTING"
+        module = "INCIDENT"
+        action = "CREATE"
+        job_name = ""
+        today = str(date.today())
+        
+        driver = self.driver
+        
+        base_url =  "https://dev65721.service-now.com"
+        
+        driver.get(base_url)
+        
+        
+        driver.switch_to_frame("gsft_main")
+        username = driver.find_element_by_id("user_name")
+        username.send_keys("admin")
+
+        password = driver.find_element_by_id("user_password")
+        password.send_keys("Liverpool28")
+        password.send_keys(Keys.RETURN)
+
+        identifier_inc = ("AUTOMATED TESTING - INCIDENT - %s" %today)
+
+        # depreciated warning
+        driver.switch_to.default_content()
+        # driver.switch_to.frame
+
+        time.sleep (10)
+
+        # Left Nav, incident.do 
+        createnew = driver.find_element_by_id("filter")
+        createnew.send_keys("Create New")
+        time.sleep(1)
+        createnew.send_keys(Keys.RETURN)
+        time.sleep(1)
+
+        # switch to main frame to create the incident
+        driver.switch_to_frame("gsft_main")
+
+
+        try:
+            element = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.ID, "incident.category"))
+                
+                )
+        except:
+            print("Element not found")
+                
+            #driver.quit()
+
+        category = driver.find_element_by_id("incident.category")
+        category.send_keys("Software")
+        time.sleep(1)
+
+
+        subcategory = driver.find_element_by_id("incident.subcategory")
+        subcategory.send_keys("Email")
+        time.sleep(1)
+
+        time.sleep(2)
+        callerbox = driver.find_element_by_id("sys_display.incident.caller_id")
+        callerbox.send_keys("Abraham Lincoln")
+        callerbox.send_keys(Keys.RETURN)
+        time.sleep(1)
+
+        contacttype = driver.find_element_by_id("incident.contact_type")
+        contacttype.send_keys("Email")
+        time.sleep(1)
+
+        impact = driver.find_element_by_id("incident.impact")
+        impact.send_keys("2")
+        time.sleep(1)
+
+        urgency = driver.find_element_by_id("incident.urgency")
+        urgency.send_keys("2")
+        time.sleep(1)
+
+        assign_grp = driver.find_element_by_id("sys_display.incident.assignment_group")
+        assign_grp.send_keys("Database")
+        assign_grp.send_keys(Keys.RETURN)
+
+        time.sleep(1)
+
+
+        short_desc = driver.find_element_by_id("incident.short_description")
+        short_desc.send_keys("%s %s %s %s" %(identifier, module, action, today))
+        time.sleep(1)
+
+        desc = driver.find_element_by_id("incident.description")
+        desc.send_keys("Here are some notes")
+        time.sleep(1)
+
+
+        # Click the save button, brings you back to the list view
+        driver.find_element_by_id("sysverb_insert").click()
+
+        # In the List View, Now commence search, Click on the funnel
+        funnel = driver.find_element(By.XPATH,'//*[@id="incident_filter_toggle_image"]')
+        funnel.click()
+        time.sleep(2)
+
+        # List View - Next Step
+        select1 = driver.find_element(By.XPATH, '//*[@id="select2-chosen-4"]')
+        select1.click()
+        time.sleep(2)
+
+        # List View - Type the field to search on
+        search_box = driver.find_element(By. XPATH, '//*[@id="s2id_autogen4_search"]')
+        search_box.send_keys("short description")
+        search_box.send_keys(Keys.RETURN)
+        time.sleep(1)
+
+        # List View -  operand step 1 - click operator field
+        select_main = driver.find_element(By.XPATH,'//*[@id="oper"]')
+        select_main.click()
+        time.sleep(2)
+
+        # List View - operand step 2- select operator
+        ddown = driver.find_element(By.XPATH, '//*[@id="oper"]/select')
+        ddown.send_keys("is")
+        time.sleep(1)
+        #select.select_by_value("=")
+        #select.select_by_visible_text("is")
+
+        # List View - Value Step - Input value for the field, and Run the Search
+        value_field = driver.find_element(By.XPATH,' //*[@id="value"]/input')
+        time.sleep(1)
+        value_field.send_keys("%s %s %s %s" %(identifier, module, action, today))
+        value_field.send_keys(Keys.RETURN)
+        time.sleep(4)
+
+        inc_text = ("AUTOMATED+TESTING+%s+%s+%s" %(module, action, today ))
+        table_id = self.driver.find_element_by_id("incident_table")
+        rows = table_id.find_elements(By.XPATH, "//*[contains(@id,'row_incident')]")
+        for row in rows:
+            cols = row.find_elements(By.XPATH, "//a[contains(@href, '%s')]" %inc_text)[1]
+            print(cols.text)
+#            print(cols.text, "was created with short description: %s %s %s %s" %(identifier, module, action, today ))
+#            self.assertIn("INC", cols.text)
+#            print
+#            for col in cols:
+#               print(col.text)
+            
+#            col = row.find_elements_by_class_name("linked_formlink")
+#            print (col.text)
+
+
+"""
+        # Find the Incident created for the test, in the list view
+        inc_text = ("AUTOMATED+TESTING+-+INCIDENT+-+%s" %today)
+        elements = driver.find_elements(By.XPATH,'//a[contains(@href, "%s")]' % inc_text)
+        for element in elements:
+                print(element.text)
+        #self.asserttrue('INC' in (element.text))
+        #element.click()
+"""
+
+
+     
+    
+    #def teardown(self):
+    #    self.driver.close()         
+
+if __name__ == '__main__':
+    unittest.main()
+
+
+
+
+
+
+
+
