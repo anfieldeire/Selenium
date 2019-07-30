@@ -40,7 +40,7 @@ class Servicenow_IncCreate(unittest.TestCase):
         username.send_keys("admin")
 
         password = driver.find_element_by_id("user_password")
-        password.send_keys("Liverpool28")
+        password.send_keys("userpass")
         password.send_keys(Keys.RETURN)
 
         identifier_inc = ("AUTOMATED TESTING - INCIDENT - %s" %today)
