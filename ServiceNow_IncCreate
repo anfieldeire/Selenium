@@ -12,13 +12,6 @@ import unittest
 class Servicenow_IncCreate(unittest.TestCase):
     def setUp(self):
         self.driver = webdriver.Firefox()
-#        base_url =  "https://dev65721.service-now.com"
-        
-#        driver.implicitly_wait(10)
-
-#        
-
-#        driver.get(base_url)
 
     def test_selenium(self):	
         #
@@ -30,17 +23,17 @@ class Servicenow_IncCreate(unittest.TestCase):
         
         driver = self.driver
         
-        base_url =  "https://dev65721.service-now.com"
+        base_url =  "https://instance.service-now.com"
         
         driver.get(base_url)
         
         
         driver.switch_to_frame("gsft_main")
         username = driver.find_element_by_id("user_name")
-        username.send_keys("admin")
+        username.send_keys("user")
 
         password = driver.find_element_by_id("user_password")
-        password.send_keys("Liverpool28")
+        password.send_keys("password")
         password.send_keys(Keys.RETURN)
 
         identifier_inc = ("AUTOMATED TESTING - INCIDENT - %s" %today)
