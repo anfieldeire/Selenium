@@ -14,7 +14,7 @@ class Servicenow_IncCreate(unittest.TestCase):
         self.driver = webdriver.Firefox()
 
     def test_selenium(self):	
-        #
+       
         identifier = "AUTOMATED TESTING"
         module = "INCIDENT"
         action = "CREATE"
