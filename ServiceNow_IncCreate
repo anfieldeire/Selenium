@@ -9,8 +9,9 @@ from datetime import date
 from selenium.webdriver.common.action_chains import ActionChains
 import unittest
 
-class Servicenow_IncCreate(unittest.TestCase):
+class Incident_Create(unittest.TestCase):
     def setUp(self):
+        ''' Setup driver Instance. '''
         self.driver = webdriver.Firefox()
 
     def test_selenium(self):	
